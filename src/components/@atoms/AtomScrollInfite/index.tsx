@@ -51,7 +51,10 @@ const AtomScrollInfite = <T extends object>(
           </>
         }
         {...props}
-        style={[{ width: "100%", paddingBottom: 100 }, props?.style]}
+        style={[
+          { width: "100%", paddingBottom: 100, paddingRight: 20 },
+          props?.style,
+        ]}
       />
     </AtomView>
   );

@@ -20,22 +20,27 @@ const CardSong = (props: ICardSongPros) => {
         flex-direction: row;
         background-color: #162238;
         justify-content: flex-start;
-        align-items: flex-start;
+        align-items: center;
         width: 100%;
       `}
     >
       <AtomView
         css={() => css`
-          width: 80px;
-          height: 80px;
+          width: 60px;
+          height: 60px;
         `}
       >
-        <AtomImage source={{ uri: image }} />
+        <AtomImage
+          source={{ uri: image }}
+          style={{
+            borderRadius: 10,
+          }}
+        />
       </AtomView>
       <AtomView
         css={() => css`
           display: flex;
-          justify-content: flex-start;
+          justify-content: center;
           align-items: flex-start;
           padding-left: 10px;
         `}
@@ -49,32 +54,35 @@ const CardSong = (props: ICardSongPros) => {
         >
           <AtomText
             css={() => css`
-              color: #536275;
-              font-size: 12px;
+              color: #7c8da4;
+              font-size: 10px;
+              font-weight: bold;
             `}
           >
-            {diffDays(publishedAt)}d
+            {publishedAt}
           </AtomText>
-          <AtomText
+          {/* <AtomText
             css={() => css`
               color: #536275;
               font-size: 12px;
             `}
           >
             {genders.map((item) => `# ${item} `).join(" ")}
-          </AtomText>
+          </AtomText> */}
         </AtomView>
         <AtomText
           css={() => css`
             font-size: 16px;
-            color: #fff;
+            font-weight: bold;
+            color: #c3cbd9;
           `}
+          numberOfLines={1}
         >
           {title}
         </AtomText>
         <AtomText
           css={() => css`
-            color: #536275;
+            color: #7c8da4;
           `}
         >
           {artist}
