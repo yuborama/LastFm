@@ -7,20 +7,10 @@ import usePlayer from "~/hooks/player";
 import Svg, { Path } from "react-native-svg";
 import mills from "~/utils/mills";
 import AtomButton from "~/components/@atoms/AtomButton";
-type IplayerControls = {
-  track: IITrack;
-};
 
-const PlayerControls = (props: IplayerControls) => {
-  const {
-    duration,
-    handlePlay,
-    handleSliderChange,
-    position,
-    isPlaying,
-    sound,
-  } = usePlayer();
-  const { track } = props;
+const PlayerControls = () => {
+  const { duration, handlePlay, handleSliderChange, position, isPlaying } =
+    usePlayer();
   return (
     <>
       <AtomView
@@ -107,7 +97,7 @@ const PlayerControls = (props: IplayerControls) => {
         </Svg>
 
         {isPlaying ? (
-          <AtomButton onPress={async () => await handlePlay(track)}>
+          <AtomButton onPress={async () => await handlePlay()}>
             <Svg width="64" height="64" viewBox="0 0 64 64" fill="none">
               <Path
                 d="M31.9202 58.6666C46.6476 58.6666 58.5868 46.7274 58.5868 31.9999C58.5868 17.2723 46.6476 5.33325 31.9202 5.33325C17.1925 5.33325 5.25342 17.2723 5.25342 31.9999C5.25342 46.7274 17.1925 58.6666 31.9202 58.6666Z"
@@ -133,7 +123,7 @@ const PlayerControls = (props: IplayerControls) => {
             </Svg>
           </AtomButton>
         ) : (
-          <AtomButton onPress={async () => await handlePlay(track)}>
+          <AtomButton onPress={async () => await handlePlay()}>
             <Svg width="64" height="64" viewBox="0 0 64 64" fill="none">
               <Path
                 d="M31.9202 58.6666C46.6476 58.6666 58.5868 46.7274 58.5868 31.9999C58.5868 17.2723 46.6476 5.33325 31.9202 5.33325C17.1925 5.33325 5.25342 17.2723 5.25342 31.9999C5.25342 46.7274 17.1925 58.6666 31.9202 58.6666Z"
