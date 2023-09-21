@@ -1,8 +1,14 @@
+import { useQuery } from "@apollo/client";
 import { useNavigate } from "react-router-native";
 import { css } from "styled-components/native";
+import { GET_TRACKS } from "~/apollo/querys/tracks";
 import AtomButton from "~/components/@atoms/AtomButton";
 import AtomView from "~/components/@atoms/AtomView";
-import CardSong from "~/components/@organims/CardSong";
+import CardSong from "~/components/@molecules/CardSong";
+import { IQueryFilter } from "~/types";
+import { useState } from "react";
+import { IITrack } from "~/apollo/types";
+import AtomScrollInfite from "~/components/@atoms/AtomScrollInfite";
 
 const songsArray = [
   {
@@ -62,6 +68,44 @@ const songsArray = [
 ];
 
 const Songs = () => {
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 20,
+    hasnextpage: false,
+    hasprevpage: false,
+    pagingcounter: 0,
+    totaldocs: 5,
+  });
+  const [tracks, setTracks] = useState<IITrack[]>([]);
+  const { loading } = useQuery<IQueryFilter<"listTracks">>(GET_TRACKS, {
+    variables: {
+      skip:
+        pagination.page * pagination.limit > pagination.totaldocs
+          ? pagination.totaldocs
+          : pagination.page * pagination.limit,
+      take: pagination.limit,
+      filter: {
+        createdAt: "ASC",
+      },
+    },
+    onCompleted: (data) => {
+      const items = (data?.listTracks?.items ?? [])
+        .filter((item) => item !== null)
+        .filter((item) => item?.preview_url !== null) as IITrack[];
+      setPagination({
+        hasnextpage:
+          data?.listTracks?.pageInfo?.hasNextPage ?? pagination.hasnextpage,
+        hasprevpage:
+          data?.listTracks?.pageInfo?.hasPreviousPage ?? pagination.hasprevpage,
+        page: pagination.page,
+        limit: pagination.limit,
+        pagingcounter: pagination.pagingcounter,
+        totaldocs: data?.listTracks?.totalCount ?? pagination.totaldocs,
+      });
+      setTracks((prev) => [...prev, ...items]);
+    },
+  });
+
   const navigate = useNavigate();
 
   return (
@@ -72,21 +116,38 @@ const Songs = () => {
         gap: 7px;
       `}
     >
-      {songsArray.map((item, _index) => (
-        <AtomButton
-          type="none"
-          css={() => css`
-            width: 100%;
-            padding: 0px;
-          `}
-          key={`song-${_index}`}
-          onPress={() => {
-            navigate("/song");
-          }}
-        >
-          <CardSong {...item} />
-        </AtomButton>
-      ))}
+      <AtomScrollInfite
+        data={tracks}
+        pagination={pagination}
+        dispatch={setPagination}
+        style={{ gap: 7 }}
+        component={(item) => (
+          <AtomButton
+            type="none"
+            css={() => css`
+              width: 100%;
+              padding: 0px;
+            `}
+            key={`song-${item?.id}`}
+            onPress={() => {
+              navigate("/song", {
+                state: {
+                  track: item,
+                },
+              });
+            }}
+          >
+            <CardSong
+              artist={item?.artists?.map((item) => item?.name).join(", ") ?? ""}
+              title={item?.name ?? ""}
+              image={item?.album?.photo ?? ""}
+              publishedAt={item?.album?.release_date ?? ""}
+              genders={[]}
+            />
+          </AtomButton>
+        )}
+        loading={loading}
+      />
     </AtomView>
   );
 };
