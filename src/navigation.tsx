@@ -1,14 +1,14 @@
 import { NativeRouter, Route, Routes } from "react-router-native";
-import Home from "./screens/home";
-import Songs from "./screens/Songs";
+import Home from "./screens/Home";
+import Player from "./screens/Player";
 
 
 const Navigation = () => {
   return (
     <NativeRouter>
       <Routes>
-        <Route path="/" element={<Songs />} />
-        <Route path="/song" element={<Home />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/song" element={<Player />} />
       </Routes>
     </NativeRouter>
   );

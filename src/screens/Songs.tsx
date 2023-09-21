@@ -9,6 +9,8 @@ import { IQueryFilter } from "~/types";
 import { useState } from "react";
 import { IITrack } from "~/apollo/types";
 import AtomScrollInfite from "~/components/@atoms/AtomScrollInfite";
+import { TrackAtom } from "~/jotai/player";
+import { useAtom } from "jotai";
 
 const songsArray = [
   {
@@ -107,7 +109,7 @@ const Songs = () => {
   });
 
   const navigate = useNavigate();
-
+  const [trackCurrent, setTrackCurrent] = useAtom(TrackAtom);
   return (
     <AtomView
       css={() => css`
@@ -120,31 +122,43 @@ const Songs = () => {
         data={tracks}
         pagination={pagination}
         dispatch={setPagination}
-        style={{ gap: 7 }}
         component={(item) => (
-          <AtomButton
-            type="none"
+          <AtomView
             css={() => css`
+              padding: 10px 20px;
               width: 100%;
-              padding: 0px;
             `}
-            key={`song-${item?.id}`}
-            onPress={() => {
-              navigate("/song", {
-                state: {
-                  track: item,
-                },
-              });
-            }}
           >
-            <CardSong
-              artist={item?.artists?.map((item) => item?.name).join(", ") ?? ""}
-              title={item?.name ?? ""}
-              image={item?.album?.photo ?? ""}
-              publishedAt={item?.album?.release_date ?? ""}
-              genders={[]}
-            />
-          </AtomButton>
+            <AtomButton
+              type="none"
+              css={() => css`
+                width: 100%;
+                padding: 0px;
+              `}
+              key={`song-${item?.id}`}
+              onPress={() => {
+                if (!item) return;
+                if (item?.id !== trackCurrent?.id) {
+                  setTrackCurrent(item);
+                }
+                navigate("/song", {
+                  state: {
+                    track: item,
+                  },
+                });
+              }}
+            >
+              <CardSong
+                artist={
+                  item?.artists?.map((item) => item?.name).join(", ") ?? ""
+                }
+                title={item?.name ?? ""}
+                image={item?.album?.photo ?? ""}
+                publishedAt={item?.album?.release_date ?? ""}
+                genders={[]}
+              />
+            </AtomButton>
+          </AtomView>
         )}
         loading={loading}
       />
