@@ -31,7 +31,6 @@ const Sizes: ISizes = {
 };
 
 const AtomLoader = (props: AtomLoaderTypes) => {
-  const theme = useTheme();
   const { loading, astheme, style, astype, color } = props;
   if (loading) {
     return (
